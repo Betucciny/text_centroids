@@ -28,11 +28,11 @@ def main():
     X_test = X[8000:]
     Y_test = Y[8000:]
 
-    X_train, eigen = PCA(X_train, 100)
-    new_X_test = []
-    for muestra in X_test:
-        new_X_test.append(deconstruct(eigen, muestra))
-    X_test = new_X_test
+    # X_train, eigen = PCA(X_train, 100)
+    # new_X_test = []
+    # for muestra in X_test:
+    #     new_X_test.append(deconstruct(eigen, muestra))
+    # X_test = new_X_test
 
     X_train_expanded = []
     Y_train_expanded = []
