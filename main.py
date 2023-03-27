@@ -13,19 +13,13 @@ def main():
     for file_name in file_names:
         text = reuters.raw(file_name)
         texts.append(text)
-        for label in reuters.categories(file_name):
-            texts.append(text)
-            labels.append(label)
+        labels.append(reuters.categories(file_name))
 
     texts = [text_preprocessing(text) for text in texts]
     tfidf = calculate_tfidf(texts)
 
-    # pca_datos = np.real(PCA(tfidf, 50)).T
-    # print(pca_datos.shape)
-
     # Randomize
     datos = [(x, y) for x, y in zip(tfidf, labels)]
-    # datos = [(x, y) for x, y in zip(pca_datos, labels)]
     random.shuffle(datos)
     X, Y = zip(*datos)
     # Split
@@ -33,14 +27,29 @@ def main():
     Y_train = Y[:8000]
     X_test = X[8000:]
     Y_test = Y[8000:]
+
+    X_train, eigen = PCA(X_train, 100)
+    X_test = deconstruct(eigen, X_test)
+
+    X_train_expanded = []
+    Y_train_expanded = []
+    for x, labels in zip(X_train, Y_train):
+        for label in labels:
+            X_train_expanded.append(x)
+            Y_train_expanded.append(label)
+
+    X_train = X_train_expanded
+    Y_train = Y_train_expanded
+
+    # Centroids
     centroids, centroid_label = centroid(X_train, Y_train)
     buenas = 0
     # Predict
-    for muestra, etiqueta in zip(X_test, Y_test):
+    for muestra, etiquetas in zip(X_test, Y_test):
         best_y = best_centroid(muestra, centroids, centroid_label)
-        if best_y == etiqueta:
+        if best_y == any(etiquetas):
             buenas += 1
-        print("Etiqueta real: ", etiqueta, "Etiqueta predicha: ", best_y)
+        print("Etiquetas reales: ", etiquetas, "Etiqueta predicha: ", best_y)
     print("Porcentaje de aciertos: ", buenas / len(Y_test) * 100, "%")
 
 

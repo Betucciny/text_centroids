@@ -61,7 +61,7 @@ def PCA(datos, k):
             matriz = dec
         else:
             matriz = np.hstack((matriz, dec))
-    return matriz
+    return matriz, eigenmat
 
 
 def calculate_tfidf(documents: list):
