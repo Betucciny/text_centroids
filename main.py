@@ -29,7 +29,10 @@ def main():
     Y_test = Y[8000:]
 
     X_train, eigen = PCA(X_train, 100)
-    X_test = deconstruct(eigen, X_test)
+    new_X_test = []
+    for muestra in X_test:
+        new_X_test.append(deconstruct(eigen, muestra))
+    X_test = new_X_test
 
     X_train_expanded = []
     Y_train_expanded = []
@@ -43,17 +46,15 @@ def main():
 
     # Centroids
     centroids, centroid_label = centroid(X_train, Y_train)
+    centroids = np.asarray(centroids)
     buenas = 0
     # Predict
     for muestra, etiquetas in zip(X_test, Y_test):
         best_y = best_centroid(muestra, centroids, centroid_label)
-        if best_y == any(etiquetas):
+        if best_y in etiquetas:
             buenas += 1
         print("Etiquetas reales: ", etiquetas, "Etiqueta predicha: ", best_y)
     print("Porcentaje de aciertos: ", buenas / len(Y_test) * 100, "%")
-
-
-
 
 
 if __name__ == "__main__":

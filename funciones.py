@@ -13,7 +13,6 @@ def covariance_matrix(x):
 def eigenmatrix(datos, k):
     cov = covariance_matrix(datos)
     eigenvalues, eigenvectors = np.linalg.eig(cov)
-    print(eigenvectors.shape)
     eigenvectors = eigenvectors.T
     eigen = [(i, j) for i, j in zip(eigenvalues, eigenvectors)]
     eigenmat = np.array([i[1] for j, i in enumerate(eigen) if j < k])
@@ -22,7 +21,7 @@ def eigenmatrix(datos, k):
 
 
 def deconstruct(eigenmat, text):
-    dec = eigenmat @ text.T
+    dec = text @ eigenmat.T
     return dec
 
 
@@ -36,8 +35,8 @@ def centroid(X, Y):
     centroids = []
     centroid_label = []
     for label, cluster in clusters.items():
-        centroid = np.mean(cluster, axis=0)
-        centroids.append(centroid)
+        centroid_ = np.mean(cluster, axis=0)
+        centroids.append(centroid_)
         centroid_label.append(label)
     return centroids, centroid_label
 
@@ -51,16 +50,14 @@ def best_centroid(X, centroids, centroid_label):
 
 
 def PCA(datos, k):
+    datos = np.asarray(datos)
     eigenmat = eigenmatrix(datos, k)
     matriz = []
     mean = np.mean(datos, axis=0, keepdims=True)
-    for i in range(datos.shape[0]):
-        text = datos[i] - mean
+    for i, texto in enumerate(datos):
+        text = texto - mean
         dec = deconstruct(eigenmat, text)
-        if i == 0:
-            matriz = dec
-        else:
-            matriz = np.hstack((matriz, dec))
+        matriz.append(dec)
     return matriz, eigenmat
 
 
@@ -102,10 +99,11 @@ def calculate_tfidf(documents: list):
             if word in tfidf_dict:
                 X[i, j] = tfidf_dict[word]
 
-    X_norms = np.linalg.norm(X, axis=1)
-    X_normalized = X / X_norms[:, np.newaxis]
-
-    return X_normalized
+    # X_norms = np.linalg.norm(X, axis=1)
+    # X_normalized = X / X_norms[:, np.newaxis]
+    #
+    # return X_normalized
+    return X
 
 
 def text_preprocessing(
