@@ -28,10 +28,10 @@ def main():
     X_test = X[8000:]
     Y_test = Y[8000:]
 
-    # X_train, eigen = PCA(X_train, 100)
+    # X_train, eigen, mean = PCA(X_train, 500)
     # new_X_test = []
     # for muestra in X_test:
-    #     new_X_test.append(deconstruct(eigen, muestra))
+    #     new_X_test.append(deconstruct(eigen, muestra - mean))
     # X_test = new_X_test
 
     X_train_expanded = []
@@ -52,6 +52,7 @@ def main():
     for muestra, etiquetas in zip(X_test, Y_test):
         best_y = best_centroid(muestra, centroids, centroid_label)
         if best_y in etiquetas:
+            print("Buena: ",)
             buenas += 1
         print("Etiquetas reales: ", etiquetas, "Etiqueta predicha: ", best_y)
     print("Porcentaje de aciertos: ", buenas / len(Y_test) * 100, "%")

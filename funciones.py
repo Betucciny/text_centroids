@@ -6,23 +6,39 @@ import nltk
 nltk.download('stopwords')
 
 
-def covariance_matrix(x):
-    return np.cov(x, rowvar=False)
-
-
-def eigenmatrix(datos, k):
-    cov = covariance_matrix(datos)
-    eigenvalues, eigenvectors = np.linalg.eig(cov)
-    eigenvectors = eigenvectors.T
-    eigen = [(i, j) for i, j in zip(eigenvalues, eigenvectors)]
-    eigenmat = np.array([i[1] for j, i in enumerate(eigen) if j < k])
-    print(eigenmat.shape)
-    return eigenmat
-
-
-def deconstruct(eigenmat, text):
-    dec = text @ eigenmat.T
-    return dec
+# def covariance_matrix(x):
+#     return np.cov(x, rowvar=False)
+#
+#
+# def eigenmatrix(datos, k):
+#     cov = covariance_matrix(datos)
+#     eigenvalues, eigenvectors = np.linalg.eig(cov)
+#     eigenvalues = eigenvalues.real
+#     eigenvectors = eigenvectors.real
+#     eigen = [(i, j) for i, j in zip(eigenvalues, eigenvectors)]
+#     eigen.sort(key=lambda x: x[0], reverse=True)
+#     for i, values in enumerate(eigen):
+#         if values[0] < 0:
+#             print(i, values[0])
+#     eigenmat = np.array([i[1] for j, i in enumerate(eigen) if j < k])
+#     return eigenmat
+#
+#
+# def deconstruct(eigenmat, text):
+#     dec = text @ eigenmat.T
+#     return dec
+#
+#
+# def PCA(datos, k):
+#     datos = np.asarray(datos)
+#     eigenmat = eigenmatrix(datos, k)
+#     matriz = []
+#     mean = np.mean(datos, axis=0, keepdims=True)
+#     for i, texto in enumerate(datos):
+#         text = texto - mean
+#         dec = deconstruct(eigenmat, text)
+#         matriz.append(dec)
+#     return matriz, eigenmat, mean
 
 
 def centroid(X, Y):
@@ -47,18 +63,6 @@ def best_centroid(X, centroids, centroid_label):
         dist = np.linalg.norm(c - X)
         distances.append((label, dist))
     return min(distances, key=lambda x: x[1])[0]
-
-
-def PCA(datos, k):
-    datos = np.asarray(datos)
-    eigenmat = eigenmatrix(datos, k)
-    matriz = []
-    mean = np.mean(datos, axis=0, keepdims=True)
-    for i, texto in enumerate(datos):
-        text = texto - mean
-        dec = deconstruct(eigenmat, text)
-        matriz.append(dec)
-    return matriz, eigenmat
 
 
 def calculate_tfidf(documents: list):
@@ -99,10 +103,6 @@ def calculate_tfidf(documents: list):
             if word in tfidf_dict:
                 X[i, j] = tfidf_dict[word]
 
-    # X_norms = np.linalg.norm(X, axis=1)
-    # X_normalized = X / X_norms[:, np.newaxis]
-    #
-    # return X_normalized
     return X
 
 
